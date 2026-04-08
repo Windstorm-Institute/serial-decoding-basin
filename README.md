@@ -1,4 +1,6 @@
-# serial decoding basin
+# The Serial Decoding Basin τ
+
+**Paper 5** — Five Experiments on τ Convergence, Thermodynamic Anchoring, and Receiver-Limited Geometry
 
 **Website:** https://windstorminstitute.org
 
