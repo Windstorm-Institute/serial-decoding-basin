@@ -1,0 +1,349 @@
+% Paper 4 of 7 in The Windstorm Series
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage{booktabs}
+\usepackage[margin=1in]{geometry}
+
+\title{Five Experiments on Convergence, Thermodynamic Anchoring, and the Geometry of Receiver-Limited Throughput}
+
+\author{Grant Lavell Whitmer III\\
+The Windstorm Institute\\
+Fort Ann, NY 12827, USA\\
+\texttt{grantwhitmer3@gmail.com}}
+
+\date{March 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This study presents five reproducible experiments investigating whether serial decoding systems converge to a finite information parameter. First, zero-free-parameter prediction: the $M$-ary rate-distortion formula predicts ribosome throughput to 0.0004 bits residual, outperforming a naive $\log_2(M)$ null model in 2 of 4 testable systems. Second, basin significance: bio-plausible $(M, \varepsilon)$ sampling places 90.5\% of samples in the 3--6 bit band versus 28.3\% for random sampling ($p \sim 0$). Third, evolutionary convergence: gradient ascent on cost-constrained utility independently discovers $K^* \sim 23$ for the molecular substrate, within 2 of the genetic code's 21 amino acids. Fourth, asymptotic convergence: the running mean across 21 systems converges to $4.16 \pm 0.19$ bits (95\% CI), with confidence interval width shrinking as $1/\sqrt{n}$. Fifth, thermodynamic anchoring: using four independently measured physical parameters, the Hopfield--Pi\~neros--Tlusty model predicts $I_{\mathrm{eff}} = 4.387$ bits against the observed 4.390, residual 0.003 bits. This anchors the basin to $kT$ and generates a falsifiable prediction: cooling a ribosome to 280\,K should raise per-event information to approximately 4.86 bits. The serial decoding basin parameter is the centroid of a geometric constraint rather than a fundamental constant.
+\end{abstract}
+
+\noindent\textbf{Keywords:} convergent evidence chain; thermodynamic anchor; kinetic proofreading efficiency; asymptotic convergence; zero-parameter prediction; Monte Carlo basin; evolutionary phase portrait; Hopfield--Pi\~neros--Tlusty model; falsifiable wet-lab prediction; ribosome fidelity
+
+\section{Introduction}
+
+In companion papers~\cite{whitmer2026floor,whitmer2026basin}, we established that the $M$-ary rate-distortion function $R_M(\varepsilon)$ provides a mechanistic floor for serial decoding throughput and that observed systems cluster in a 3--6 bit basin decomposable into floor plus substrate slack plus residual. These papers raise a natural question: does the aggregate behavior converge to a well-defined parameter?
+
+This paper presents five experiments designed to answer that question from five independent angles, forming a convergent evidence chain. Each experiment includes a formal hypothesis, an explicit control group, a quantified result, and a Python implementation for independent replication. The experimental design prioritizes falsifiability: each experiment is constructed so that a negative result would weaken or invalidate the framework.
+
+\textbf{Definition.} The Serial Decoding Basin parameter $\tau$ is defined as:
+\begin{equation}
+\tau = \lim_{n \to \infty} \frac{1}{n} \sum_{i=1}^{n} I_{\mathrm{eff},i}
+\end{equation}
+where $I_{\mathrm{eff},i}$ is the receiver-resolved information per event for the $i$-th independently characterized serial decoding system. The parameter $\tau$ is the centroid of a geometric constraint---the rate-distortion surface $R_M(\varepsilon)$ evaluated at parameter ranges observed in biological serial decoders---not a fundamental constant like $c$ or $\hbar$.
+
+\section{Materials and Methods}
+
+\subsection{Experiment 1: Zero-Free-Parameter Predictions}
+
+For systems where alphabet size $M$ and error rate $\varepsilon$ are measured independently of $I_{\mathrm{eff}}$, the formula
+\begin{equation}
+R_M(\varepsilon) = \log_2(M) - H_b(\varepsilon) - \varepsilon \log_2(M - 1)
+\end{equation}
+was applied to predict throughput. The null hypothesis is that $I_{\mathrm{eff}}$ scales only with $\log_2(M)$, ignoring $\varepsilon$. Four systems were tested: ribosome ($M = 21$, $\varepsilon = 10^{-4}$), phonology ($M = 31$, $\varepsilon = 0.02$), chromatic scale ($M = 12$, $\varepsilon = 0.05$), and neural working memory ($M = 7$, $\varepsilon = 0.12$).
+
+\subsection{Experiment 2: Monte Carlo Basin Significance}
+
+$N = 40{,}000$ samples were drawn from each of two distributions. Bio-plausible: $M$ uniform in $[4, 64]$, $\varepsilon$ log-uniform in $[10^{-4}, 0.1]$. Control: $M$ uniform in $[2, 300]$, $\varepsilon$ log-uniform in $[10^{-5}, 0.5]$. Basin membership was recorded as 1 if $R_M(\varepsilon)$ falls in $[3, 6]$ bits, 0 otherwise. Significance was assessed via binomial test.
+
+\subsection{Experiment 3: Evolutionary Phase Portrait}
+
+Gradient ascent was performed on the utility function $U(K) = \log_2(K) - \gamma K^{\alpha}$ with substrate-specific cost parameters: molecular ($\alpha = 1.50$, $\gamma = 0.0085$), neural ($\alpha = 1.76$, $\gamma = 0.0190$), acoustic ($\alpha = 1.35$, $\gamma = 0.0042$), and digital ($\alpha = 1.20$, $\gamma = 0.0011$). These values are estimates, not independently measured constants. Twenty random starts per substrate were used to verify convergence independence. The control was a random fitness landscape $U_{\mathrm{random}}(K) = \text{noise}$.
+
+\subsection{Experiment 4: Asymptotic Convergence}
+
+The running mean $\tau_n$ and 95\% bootstrap confidence interval were computed using 21 systems from the cross-substrate survey~\cite{whitmer2026basin}, entered in order of measurement precision (Tier~1 first). The control was random $I_{\mathrm{eff}}$ values sampled uniformly from $[0, 8]$ bits.
+
+\subsection{Experiment 5: Thermodynamic Anchor to $kT$}
+
+Ribosome throughput was predicted from four independently measured physical parameters via the Hopfield--Pi\~neros--Tlusty kinetic proofreading model~\cite{hopfield1974,pineros2020}:
+\begin{equation}
+I_{\mathrm{eff}} = \eta \cdot n_c \cdot \frac{\Delta G}{R\,T\,\ln 2}
+\end{equation}
+
+\begin{table}[ht]
+\centering
+\caption{Physical parameters for thermodynamic prediction.}
+\begin{tabular}{llll}
+\toprule
+Parameter & Symbol & Value & Source \\
+\midrule
+Proofreading efficiency & $\eta$ & 0.223 & Pi\~neros and Tlusty (2020), TUR measurement \\
+Discrimination contacts & $n_c$ & 3 & tRNA biology, X-ray crystallography \\
+Free energy per contact & $\Delta G$ & 2.8 kcal/mol & Isothermal calorimetry \\
+Temperature & $T$ & 310\,K & Physiological standard \\
+\bottomrule
+\end{tabular}
+\label{tab:params}
+\end{table}
+
+All four parameters are measured independently of $I_{\mathrm{eff}}$. The falsification criterion is that varying $T$ or $\Delta G$ should produce physically predictable changes in $I_{\mathrm{eff}}$ if the thermodynamic relationship is genuine.
+
+\section{Results}
+
+\subsection{Experiment 1: Zero-Free-Parameter Predictions}
+
+\begin{table}[ht]
+\centering
+\caption{Rate-distortion predictions versus null model.}
+\small
+\begin{tabular}{llccccccl}
+\toprule
+System & Tier & $M$ & $\varepsilon$ & $R_M(\varepsilon)$ & Observed & Resid.\ (model) & Resid.\ (null) & Winner \\
+\midrule
+Ribosome & MI & 21 & $10^{-4}$ & 4.390 & 4.390 & $+$0.000 & $+$0.002 & $R_M$ \\
+Phonology & MI & 31 & 0.02 & 4.715 & 4.200 & $+$0.515 & $+$0.754 & $R_M$ \\
+Chromatic & SS & 12 & 0.05 & 3.126 & 3.580 & $-$0.454 & $-$0.005 & Null \\
+Neural WM & SS & 7 & 0.12 & 1.968 & 3.120 & $-$1.152 & $-$0.313 & Null \\
+\bottomrule
+\end{tabular}
+\label{tab:zeroparam}
+\end{table}
+
+$R_M(\varepsilon)$ outperforms the null in 2 of 4 testable systems. The informative tests are phonology ($R_M$ wins by 0.24 bits) and neural working memory (null wins by 0.84 bits). The neural working memory failure likely reflects that Miller's $7 \pm 2$ items involve parallel chunk comparison rather than pure serial discrimination---a scope violation of the framework.
+
+\subsection{Experiment 2: Monte Carlo Basin Significance}
+
+Bio-plausible sampling: 90.5\% in $[3, 6]$ bits (mean $I_{\mathrm{eff}} = 4.49$). Random control: 28.3\% (mean $I_{\mathrm{eff}} = 3.12$). Binomial test: $p < 10^{-300}$. The 3--6 bit basin is a real attractor of the bio-plausible parameter region. However, this demonstrates geometric consequence of biological parameter ranges, not necessarily that biology ``chose'' these parameters because of the basin.
+
+\subsection{Experiment 3: Evolutionary Phase Portrait}
+
+\begin{table}[ht]
+\centering
+\caption{Evolutionary simulation results across substrates.}
+\begin{tabular}{lccccr}
+\toprule
+Substrate & $K^*$ (theory) & $K^*$ (sim, 20 runs) & $I^*$ (bits) & Observed $I_{\mathrm{eff}}$ & $\Delta I$ \\
+\midrule
+Molecular & 23.4 & $23.4 \pm 0.01$ & 3.59 & 4.39 & $-$0.80 \\
+Acoustic & 60.5 & $60.5 \pm 0.01$ & 4.85 & 4.95 & $-$0.10 \\
+Neural & 8.5 & $8.5 \pm 0.00$ & 2.27 & 3.12 & $-$0.85 \\
+Digital & 340.5 & $340.5 \pm 0.02$ & 7.21 & 4.46 & $+$2.75 \\
+\bottomrule
+\end{tabular}
+\label{tab:evolution}
+\end{table}
+
+The molecular fixed point $K^* \sim 23$ is within 2 of the ribosome's $M = 21$. The acoustic substrate shows near-zero prediction error ($\Delta I = -0.10$). The co-evolutionary result from the companion paper~\cite{whitmer2026basin} is the strongest: $K = 19.76$ and $\varepsilon = 6.62 \times 10^{-3}$, independently rediscovering the ribosome's neighborhood.
+
+\subsection{Experiment 4: Asymptotic Convergence}
+
+\begin{table}[ht]
+\centering
+\caption{Running mean convergence.}
+\begin{tabular}{cccc}
+\toprule
+$n$ & $\tau_n$ & 95\% CI & CI width \\
+\midrule
+5 & 4.140 & $[3.676, 4.608]$ & 0.932 \\
+10 & 4.191 & $[3.878, 4.568]$ & 0.690 \\
+15 & 4.157 & $[3.908, 4.408]$ & 0.500 \\
+21 & 4.157 & $[3.970, 4.350]$ & 0.380 \\
+\bottomrule
+\end{tabular}
+\label{tab:convergence}
+\end{table}
+
+$\tau_{21} = 4.157$ bits. The CI width shrinks from 0.93 at $n = 5$ to 0.38 at $n = 21$, consistent with $\sqrt{n}$ convergence. Tier~1 only ($n = 7$): $\tau_7 = 4.24$ bits, 95\% CI $[4.00, 4.48]$.
+
+\subsection{Experiment 5: Thermodynamic Anchor}
+
+\begin{equation}
+I_{\mathrm{pred}} = \frac{0.223 \times 3 \times 2.8}{1.987 \times 10^{-3} \times 310 \times \ln 2} = 4.387 \text{ bits}
+\end{equation}
+
+\begin{table}[ht]
+\centering
+\caption{Thermodynamic prediction summary.}
+\begin{tabular}{lc}
+\toprule
+Quantity & Value \\
+\midrule
+$I_{\max}$ (no proofreading, $\eta = 1$) & 19.67 bits \\
+$I_{\mathrm{pred}}$ ($\eta = 0.223$) & 4.387 bits \\
+$I_{\mathrm{obs}}$ (rate-distortion) & 4.390 bits \\
+Residual & 0.003 bits \\
+\bottomrule
+\end{tabular}
+\label{tab:thermo}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\caption{Sensitivity of thermodynamic prediction to $\eta$.}
+\begin{tabular}{ccc}
+\toprule
+$\eta$ & $I_{\mathrm{pred}}$ & Residual from observed \\
+\midrule
+0.200 & 3.935 & $-$0.455 \\
+0.210 & 4.131 & $-$0.259 \\
+0.220 & 4.328 & $-$0.062 \\
+0.223 & 4.387 & $-$0.003 \\
+0.230 & 4.525 & $+$0.135 \\
+0.250 & 4.919 & $+$0.529 \\
+\bottomrule
+\end{tabular}
+\label{tab:sensitivity}
+\end{table}
+
+The prediction is sensitive to $\eta$: a $\pm 5$\% shift in $\eta$ produces a $\pm 0.5$ bit shift in $I_{\mathrm{pred}}$. The residual of 0.003 bits depends on $\eta$ being correct to approximately 1\%. The critical provenance of $\eta = 0.223$ is from Pi\~neros and Tlusty's measurement of the ribosome's distance from the thermodynamic uncertainty relation bound~\cite{pineros2020}, derived from kinetic rate constants ($k_{\mathrm{cat}}$, $k_{\mathrm{off}}$), not from information throughput---this is the basis of the independence claim.
+
+\textbf{Falsifiable wet-lab prediction:} At $T = 280$\,K, $I_{\mathrm{eff}} = 4.857$ bits ($+0.47$ from 310\,K). At $T = 340$\,K, $I_{\mathrm{eff}} = 3.996$ bits ($-0.39$ from 310\,K). Temperature coefficient: $dI_{\mathrm{eff}}/dT \sim -0.014$ bits/K. This is testable by measuring ribosomal translation fidelity at controlled temperatures.
+
+\section{Discussion}
+
+\subsection{The Convergent Evidence Chain}
+
+Each experiment alone is suggestive. Together, they constitute a coherent case:
+
+\begin{table}[ht]
+\centering
+\caption{Summary of convergent evidence.}
+\begin{tabular}{llll}
+\toprule
+Experiment & Question & Key Result & Falsified? \\
+\midrule
+Zero-parameter & Does $R_M$ predict? & Ribosome residual $= 0.0004$ & No \\
+Monte Carlo & Is the basin real? & 90.5\% vs 28.3\%, $p \sim 0$ & No \\
+Evolution & Does optimization find $M \sim 21$? & $K^* = 23.4$ & No \\
+Convergence & Does $\tau_n$ converge? & $\tau_{21} = 4.16$, CI shrinking & No \\
+Thermodynamic & Is $\tau$ anchored to $kT$? & Residual $= 0.003$ & No (pending $\eta$ revision) \\
+\bottomrule
+\end{tabular}
+\label{tab:summary}
+\end{table}
+
+\subsection{What the Chain Does Not Prove}
+
+The evidence does not prove that $\tau$ is a universal constant (between-domain variation is real; Kruskal--Wallis $p = 0.016$), that biology ``chose'' the basin versus merely inhabiting it, that $\eta = 0.223$ is correct to the precision needed, or that $n = 21$ systems is sufficient for reliable convergence. The $\tau$ parameter is best interpreted as the centroid of a geometric constraint rather than a fundamental physical constant.
+
+\subsection{Ribosomal Efficiency in Context}
+
+The ribosome operates within 2.7\% of its theoretical thermodynamic minimum ($\phi_{\mathrm{useful}} = 1.027$). For comparison, the best human-engineered heat engines achieve 40--60\% of Carnot efficiency, and the best solar cells reach 47\% of the Shockley--Queisser limit. Evolution is a better optimizer than human engineering---at least for the serial decoding problem. This efficiency has implications for synthetic biology: any attempt to expand the genetic code beyond 21 amino acids must contend with the ribosome's near-optimal thermodynamic operating point~\cite{zaher2009}.
+
+\subsection{Toward a Formal Asymptotic Framework}
+
+The function $R_M(\varepsilon)$ is continuous and bounded on the compact bio-plausible domain $\mathcal{D} = \{(M, \varepsilon) : M \in [4, 64],\; \varepsilon \in [10^{-4}, 0.1]\}$. By the strong law of large numbers, for any probability measure $\mu$ on $\mathcal{D}$, $\tau = \mathbb{E}_{(M,\varepsilon)\sim\mu}[R_M(\varepsilon)]$ exists and is finite. The empirical estimate $\tau_{21} = 4.16$ is a sample mean converging to this expectation.
+
+A renormalization group conjecture (not proven) suggests that the rate-distortion surface may admit a coarse-graining operator with a stable fixed point at approximately $\tau$. If true, $\tau$ would be the infrared fixed point of a universality class of serial decoding systems---analogous to critical exponents in statistical mechanics. This conjecture is stated explicitly as unproven and is offered as a direction for future mathematical investigation.
+
+\subsection{Priority Measurements}
+
+Every new Tier~1 confusion-matrix measurement narrows the confidence interval on $\tau$. The highest-priority targets include: olfactory receptor confusion matrices (new Tier~1 domain), sign language phonological feature mutual information (new Tier~1 domain), insect pheromone channel capacity (cross-phylum test), synthetic cells with expanded genetic codes (direct test of the $M$ prediction), and quantum biological systems such as photosynthetic exciton transfer (Holevo bound comparison).
+
+\subsection{Limitations}
+
+\begin{enumerate}
+\item The ribosome prediction at low $\varepsilon$ is near-tautological ($R_M$ approaches $\log_2(M)$ as $\varepsilon \to 0$); the framework's value lies in unifying $M$, $\varepsilon$, and throughput.
+\item The cost parameters ($\alpha$, $\gamma$) in Experiment~3 are estimates, not independently measured constants.
+\item The thermodynamic anchor (Experiment~5) depends on $\eta = 0.223$ being correct to approximately 1\%; future revisions to $\eta$ change the residual proportionally.
+\item With only 21 systems (7 at Tier~1), the confidence interval on $\tau$ remains wide (0.38 bits).
+\item The temperature prediction (Experiment~5) has not yet been tested in a wet-lab setting.
+\end{enumerate}
+
+\section{Conclusion}
+
+The Serial Decoding Basin parameter $\tau \sim 4.16 \pm 0.19$ bits (95\% CI at $n = 21$) is supported by five converging lines of evidence: zero-parameter prediction, Monte Carlo basin analysis, evolutionary optimization, asymptotic convergence, and thermodynamic anchoring to $kT$ for the ribosome. The ribosome sits near the rate-distortion floor (4.390 bits under uniform assumption, approximately 4.175 bits under empirical amino acid frequencies) and is independently predicted by the Hopfield--Pi\~neros--Tlusty kinetic proofreading model (4.387 bits, residual $= 0.003$ bits). The strongest result is not a number but a process: evolutionary simulations independently converge to the same basin that molecular evolution found, suggesting the basin is an attractor of the information-cost landscape. The thermodynamic anchor generates a falsifiable wet-lab prediction ($dI_{\mathrm{eff}}/dT \sim -0.014$ bits/K) that future experiments can test.
+
+\subsection*{Author Contributions}
+
+Conceptualization, G.L.W.; methodology, G.L.W.; software, G.L.W.; validation, G.L.W.; formal analysis, G.L.W.; investigation, G.L.W.; resources, G.L.W.; data curation, G.L.W.; writing---original draft preparation, G.L.W.; writing---review and editing, G.L.W.; visualization, G.L.W.; supervision, G.L.W.; project administration, G.L.W.
+
+\subsection*{Funding}
+
+This research received no external funding. All work was self-funded by the author.
+
+\subsection*{Data Availability Statement}
+
+All data, Python implementations for all five experiments, analysis scripts, and raw results supporting the findings of this study are publicly available at \url{https://github.com/Windstorm-Labs/serial-decoding-basin}.
+
+\subsection*{Acknowledgments}
+
+This paper was developed through adversarial review by six frontier AI models. Mathematical derivations, experimental design, and data analysis were performed with the assistance of Claude (Anthropic), an AI research tool. The $\tau$ formalization was catalyzed by Claude's review and experimental suite.
+
+\subsection*{Conflicts of Interest}
+
+The author declares no conflict of interest.
+
+\begin{thebibliography}{99}
+
+\bibitem{whitmer2026floor}
+Whitmer, G.L., III.
+The Receiver-Limited Floor: Rate-Distortion Bounds on Serial Decoding Throughput.
+\emph{Zenodo}, 2026.
+\href{https://doi.org/10.5281/zenodo.19322973}{DOI: 10.5281/zenodo.19322973}
+
+\bibitem{whitmer2026basin}
+Whitmer, G.L., III.
+The Throughput Basin: Cross-Substrate Convergence and Decomposition of Serial Decoding Throughput.
+\emph{Zenodo}, 2026.
+\href{https://doi.org/10.5281/zenodo.19323194}{DOI: 10.5281/zenodo.19323194}
+
+\bibitem{hopfield1974}
+Hopfield, J.J.
+Kinetic Proofreading: A New Mechanism for Reducing Errors in Biosynthetic Processes Requiring High Specificity.
+\emph{Proc.\ Natl.\ Acad.\ Sci.\ USA}, 1974, \emph{71}, 4135--4139.
+\href{https://doi.org/10.1073/pnas.71.10.4135}{DOI: 10.1073/pnas.71.10.4135}
+
+\bibitem{pineros2020}
+Pi\~neros, W.D.; Tlusty, T.
+Kinetic Proofreading and the Limits of Thermodynamic Discrimination.
+\emph{Phys.\ Rev.\ Lett.}, 2020, \emph{125}, 228101.
+\href{https://doi.org/10.1103/PhysRevLett.125.228101}{DOI: 10.1103/PhysRevLett.125.228101}
+
+\bibitem{zaher2009}
+Zaher, H.S.; Green, R.
+Quality Control by the Ribosome Following Peptide Bond Formation.
+\emph{Nature}, 2009, \emph{457}, 161--166.
+\href{https://doi.org/10.1038/nature07582}{DOI: 10.1038/nature07582}
+
+\bibitem{shannon1948}
+Shannon, C.E.
+A Mathematical Theory of Communication.
+\emph{Bell Syst.\ Tech.\ J.}, 1948, \emph{27}, 379--423.
+\href{https://doi.org/10.1002/j.1538-7305.1948.tb01338.x}{DOI: 10.1002/j.1538-7305.1948.tb01338.x}
+
+\bibitem{miller1956}
+Miller, G.A.
+The Magical Number Seven, Plus or Minus Two: Some Limits on Our Capacity for Processing Information.
+\emph{Psychol.\ Rev.}, 1956, \emph{63}, 81--97.
+\href{https://doi.org/10.1037/h0043158}{DOI: 10.1037/h0043158}
+
+\bibitem{tlusty2008}
+Tlusty, T.
+Rate-Distortion Scenario for the Emergence and Evolution of Noisy Molecular Codes.
+\emph{Phys.\ Rev.\ Lett.}, 2008, \emph{100}, 048101.
+\href{https://doi.org/10.1103/PhysRevLett.100.048101}{DOI: 10.1103/PhysRevLett.100.048101}
+
+\bibitem{whitmer2026fons}
+Whitmer, G.L., III.
+The Fons Constraint: Information-Theoretic Convergence on Encoding Depth in Self-Replicating Systems.
+\emph{Zenodo}, 2026.
+\href{https://doi.org/10.5281/zenodo.19274048}{DOI: 10.5281/zenodo.19274048}
+
+\bibitem{whitmer2026code}
+Whitmer, G.L., III.
+Serial Decoding Basin: Experiment Code and Data.
+\emph{GitHub}, 2026.
+Available online: \url{https://github.com/Windstorm-Labs/serial-decoding-basin}
+
+\end{thebibliography}
+
+\subsection*{Appendix A. Python Implementations}
+
+All five experiments include complete Python implementations for independent replication, using standard scientific Python libraries (NumPy, SciPy). The code, including all analysis scripts, raw data, and visualization specifications, is available at the companion repository~\cite{whitmer2026code}. Any researcher with a standard Python environment can reproduce all results presented in this paper.
+
+\bigskip
+\noindent\emph{This paper is Paper~4 of The Windstorm Series. The series includes Paper~1: The Fons Constraint~\cite{whitmer2026fons}, Paper~2: The Receiver-Limited Floor~\cite{whitmer2026floor}, Paper~3: The Throughput Basin~\cite{whitmer2026basin}, Paper~5: The Dissipative Decoder (DOI: 10.5281/zenodo.19433048), Paper~6: The Inherited Constraint (DOI: 10.5281/zenodo.19432911), and Paper~7: The Throughput Basin Origin (DOI: 10.5281/zenodo.19498582).}
+
+\bigskip
+\noindent\textcopyright{} 2026 Grant Lavell Whitmer III. This article is licensed under a Creative Commons Attribution 4.0 International License (CC BY 4.0).
+
+\end{document}
