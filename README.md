@@ -23,6 +23,14 @@ Reproducible experiments and raw data for this paper:
 
 ---
 
+## Discuss this paper
+
+- **Discuss the paper's ideas** → [Comments on the website article](https://windstorminstitute.org/articles/serial-decoding-basin.html#comments) (powered by GitHub Discussions on the website repo)
+- **Typo, citation issue, or paper-content correction?** → [Open an Issue on this repo](../../issues)
+- **Bug in the analysis code, or a reproduction question?** → [Issue](https://github.com/Windstorm-Labs/serial-decoding-basin/issues) or [Discussion](https://github.com/Windstorm-Labs/serial-decoding-basin/discussions) on the Labs repo
+
+---
+
 ## The Windstorm Series
 
 | # | Paper | DOI |
